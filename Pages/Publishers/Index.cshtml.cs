@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Banciu_Adrian_Lab2.Data;
 using Banciu_Adrian_Lab2.Models;
+using Banciu_Adrian_Lab2.Models.ViewModels;
 
 namespace Banciu_Adrian_Lab2.Pages.Publishers
 {
@@ -19,11 +20,24 @@ namespace Banciu_Adrian_Lab2.Pages.Publishers
             _context = context;
         }
 
-        public IList<Publisher> Publisher { get;set; } = default!;
+        public PublisherIndexData PublisherData { get; set; }
+        public int PublisherID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id)
         {
-            Publisher = await _context.Publisher.ToListAsync();
+            PublisherData = new PublisherIndexData();
+            PublisherData.Publishers = await _context.Publisher
+                .Include(p => p.Books)
+                    .ThenInclude(b => b.Author)
+                .OrderBy(p => p.PublisherName)
+                .ToListAsync();
+
+            if (id != null)
+            {
+                PublisherID = id.Value;
+                var selectedPublisher = PublisherData.Publishers.SingleOrDefault(p => p.ID == id.Value);
+                PublisherData.Books = selectedPublisher?.Books;
+            }
         }
     }
 }

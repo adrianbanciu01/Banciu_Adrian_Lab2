@@ -43,6 +43,19 @@
                     <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
                     <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.TitleSort">Title</a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.AuthorSort">Author</a>
+                </th>
+                <form asp-page="./Index" method="get">
+                    <p>
+                        Search: <input type="text" name="searchString" value="@Model.CurrentFilter" />
+                        <input type="submit" value="Search" class="btn btn-primary" />
+                    </p>
+                </form>
+
                 </td>
                 <td>
                     @{

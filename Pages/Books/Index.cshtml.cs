@@ -23,6 +23,10 @@ namespace Banciu_Adrian_Lab2.Pages.Books
         public BookData BookD { get; set; }
         public int BookID { get; set; }
         public int CategoryID { get; set; }
+        public string TitleSort { get; set; }
+        public string AuthorSort { get; set; }
+        public string CurrentFilter { get; set; }
+
         public async Task OnGetAsync(int? id, int? categoryID)
         {
             BookD = new BookData();
@@ -41,6 +45,33 @@ namespace Banciu_Adrian_Lab2.Pages.Books
                 .Where(i => i.ID == id.Value).Single();
                 BookD.Categories = book.BookCategories.Select(s => s.Category);
             }
+        }
+        public async Task OnGetAsync(string sortOrder, string searchString)
+        {
+            TitleSort = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            AuthorSort = sortOrder == "author" ? "author_desc" : "author";
+            CurrentFilter = searchString;
+
+            var books = from b in _context.Book
+                        .Include(b => b.Author)
+                        .Include(b => b.Publisher)
+                        select b;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(b => b.Title.Contains(searchString) ||
+                                         b.Author.FullName.Contains(searchString));
+            }
+
+            books = sortOrder switch
+            {
+                "title_desc" => books.OrderByDescending(b => b.Title),
+                "author" => books.OrderBy(b => b.Author.FullName),
+                "author_desc" => books.OrderByDescending(b => b.Author.FullName),
+                _ => books.OrderBy(b => b.Title)
+            };
+
+            Book = await books.AsNoTracking().ToListAsync();
         }
     }
 }

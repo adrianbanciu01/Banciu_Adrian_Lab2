@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Banciu_Adrian_Lab2.Data;
 using Banciu_Adrian_Lab2.Models;
+using Banciu_Adrian_Lab2.Models.ViewModels;
 
 namespace Banciu_Adrian_Lab2.Pages.Categories
 {
@@ -19,11 +20,26 @@ namespace Banciu_Adrian_Lab2.Pages.Categories
             _context = context;
         }
 
-        public IList<Category> Category { get;set; } = default!;
+        public CategoryIndexData CategoryData { get; set; }
+        public int CategoryID { get; set; }
+        public int BookID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id)
         {
-            Category = await _context.Category.ToListAsync();
+            CategoryData = new CategoryIndexData();
+
+            CategoryData.Categories = await _context.Category
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+
+            if (id != null)
+            {
+                CategoryID = id.Value;
+                var selectedCategory = CategoryData.Categories
+                    .Where(c => c.ID == id.Value)
+                    .Single();
+                CategoryData.Books = selectedCategory.Books;
+            }
         }
     }
 }
