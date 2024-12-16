@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Banciu_Adrian_Lab2.Models;
 
-namespace Nume_Pren_Lab2.Models
+namespace Banciu_Adrian_Lab2.Models
 {
     public class Book
     {
@@ -17,9 +18,12 @@ namespace Nume_Pren_Lab2.Models
         [DataType(DataType.Date)]
         public DateTime PublishingDate { get; set; }
 
-        public int? AuthorID { get; set; } 
+        public int? AuthorID { get; set; }
+        public int? PublisherID { get; set; }
+        public Publisher? Publisher { get; set; }
 
         public Author? Author { get; set; } // Navigation property
+        public ICollection<BookCategory>? BookCategories { get; set; }
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Banciu_Adrian_Lab2.Models;
 
-namespace Nume_Pren_Lab2.Models
+namespace Banciu_Adrian_Lab2.Models
 {
     public class Author
     {
